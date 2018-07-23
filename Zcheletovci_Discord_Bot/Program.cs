@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Zcheletovci_Discord_Bot
 {
@@ -10,6 +6,9 @@ namespace Zcheletovci_Discord_Bot
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Token - " + Config.bot.token);
+            Console.WriteLine("Command Prefix - " + Config.bot.cmdPrefix);
+            Console.ReadLine();
         }
     }
 }
