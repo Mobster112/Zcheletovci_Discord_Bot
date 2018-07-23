@@ -45,9 +45,12 @@ namespace Zcheletovci_Discord_Bot.Modules
             await Context.Channel.SendMessageAsync("", false, embed);
         }
 
-        [Command("Silence")]
+        [Command("silence")]
         public async Task Silence()
         {
+            int numMuted = 0;
+            List<string> mutedUsers = new List<string>();
+
             var channels = Context.Guild.VoiceChannels;
             foreach (var channel in channels)
             {
@@ -57,14 +60,45 @@ namespace Zcheletovci_Discord_Bot.Modules
                     {
                         if(user.Id != Context.User.Id)
                         {
-
+                            mutedUsers.Add(user.Mention);
+                            await (user as IGuildUser)?.ModifyAsync(x =>
+                            {
+                                x.Mute = true;
+                                numMuted++;
+                            });
                         }
                     }
                     break;
                 }
             }
+            string msg = String.Format("{0} users have been muted:\n", numMuted);
 
-            await Task.Delay(1);
+            int i = 1;
+
+            foreach(var user in mutedUsers)
+            {
+                msg += String.Format("{0}.) {1}\n", i, user);
+                i++;
+            }
+
+            await Context.Channel.SendMessageAsync(msg);
+        }
+
+        [Command("unmute")]
+        public async Task Unmute()
+        {
+            foreach (var user in Context.Guild.Users)
+            {
+                if (user.IsMuted)
+                {
+                    await (user as IGuildUser)?.ModifyAsync(x =>
+                    {
+                        x.Mute = false;
+                    });
+                }
+            }
+
+            await Context.Channel.SendMessageAsync("Unmuted everyone!");
         }
     }
 }
